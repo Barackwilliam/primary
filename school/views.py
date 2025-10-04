@@ -272,8 +272,11 @@ def report_pdf(request, class_id, term_id, student_id=None):
     
 from django.core.mail import send_mail
 from django.conf import settings
-import pywhatkit as kit   # kwa WhatsApp unofficial sending (needs web.whatsapp.com login)
+# import pywhatkit as kit  
+import os
 
+if os.environ.get('DJANGO_ENV') != 'production':
+    import pywhatkit as kit
 @login_required
 def sms_view(request):
     if request.method == "POST":
