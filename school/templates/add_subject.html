@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Add Subject{% endblock %}
+
+{% block content %}
+<div class="mb-5 text-center">
+    <h3 class="fw-bold display-5 animate-header">Add New Subject</h3>
+    <p class="text-primary fs-5 animate-subheader">
+        Enter subject details below to add it to the system.
+    </p>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 p-4 animate-card">
+    <div class="card-body">
+        <form method="post" class="form-container">
+            {% csrf_token %}
+            <div class="row g-3">
+                {% for field in form %}
+                    <div class="col-12 col-md-6">
+                        <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
+                            {{ field.label }}
+                            {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                        </label>
+                        <div class="input-wrapper">
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                            <div class="text-danger mt-1 small">
+                                {{ field.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <div class="form-text text-muted small">{{ field.help_text }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-primary btn-custom animate-button">
+                    <i class="fas fa-save me-2"></i> Save Subject
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Card styling */
+.card {
+    background: #fff;
+    border-radius: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--accent-color), transparent);
+    opacity: 0.8;
+}
+
+/* Form labels */
+.form-label {
+    font-weight: 600;
+    color: #212529;
+}
+
+/* Inputs */
+.input-wrapper input,
+.input-wrapper select,
+.input-wrapper textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 0.5rem;
+    border: 1px solid #ced4da;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+.input-wrapper input:focus,
+.input-wrapper select:focus,
+.input-wrapper textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 8px rgba(0,170,255,0.3);
+    outline: none;
+}
+
+/* Buttons */
+.btn-custom {
+    padding: 12px 24px;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    background: var(--accent-color);
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.btn-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    background: #0088cc;
+}
+
+/* Animations */
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-header { animation: fadeInLeft 0.6s ease-out; }
+.animate-subheader { animation: fadeInLeft 0.6s ease-out 0.2s; animation-fill-mode: backwards; }
+.animate-card { animation: slideInUp 0.6s ease-out; }
+.animate-button { animation: slideInUp 0.6s ease-out 0.4s; animation-fill-mode: backwards; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-container { max-width: 100%; padding: 0 15px; }
+    .col-md-6 { margin-bottom: 10px; }
+    .btn-custom { width: 100%; padding: 10px; }
+}
+@media (max-width: 576px) {
+    .mb-5 { margin-bottom: 2.5rem !important; }
+    .display-5 { font-size: 1.8rem; }
+    .form-container { padding: 0 10px; }
+    .card { margin: 0 10px; }
+}
+</style>
+{% endblock %}

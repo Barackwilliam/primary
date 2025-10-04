@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% block title %}Reports for {{ classroom.name }} - {{ term.name }}{% endblock %}
+
+{% block content %}
+<div class="mb-5">
+    <h3 class="fw-bold display-5 animate-header">Reports - {{ classroom.name }} ({{ term.name }})</h3>
+    <p class="text-primary fs-5 animate-subheader">View and download performance reports for the selected class and term.</p>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 p-4 animate-card">
+    <div class="card-body">
+        <div class="d-flex justify-content-end mb-4">
+            <a href="{% url 'report_pdf_class' classroom.id term.id %}" class="btn btn-primary btn-custom animate-button">
+                <i class="fas fa-file-pdf me-2"></i> Download Class PDF
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">Position</th>
+                        <th class="text-center">Admission</th>
+                        <th class="text-center">Student</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-center">Average</th>
+                        <th class="text-center">Grade</th>
+                        <th class="text-center">PDF</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in results %}
+                    <tr class="animate-row">
+                        <td class="text-center align-middle">{{ r.position }}</td>
+                        <td class="text-center align-middle">{{ r.student.admission_number }}</td>
+                        <td class="align-middle">{{ r.student.full_name }}</td>
+                        <td class="text-center align-middle">{{ r.total }}</td>
+                        <td class="text-center align-middle">{{ r.average|floatformat:2 }}</td>
+                        <td class="text-center align-middle">{{ r.grade }}</td>
+                        <td class="text-center align-middle">
+                            <a class="btn btn-sm btn-outline-secondary btn-custom-small"
+                               href="{% url 'report_pdf_student' classroom.id term.id r.student.id %}">
+                                <i class="fas fa-file-download me-1"></i> PDF
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted animate-row">
+                            <i class="fas fa-info-circle me-2"></i> No results yet. Make sure marks are entered.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Card styling */
+    .card {
+        background: var(--secondary-bg);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body.light-theme .card {
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--accent-color), transparent);
+        opacity: 0.7;
+    }
+
+    /* Table styling */
+    .table {
+        background: var(--secondary-bg);
+        color: var(--text-color);
+    }
+
+    body.light-theme .table {
+        background: #fff;
+    }
+
+    .table-dark {
+        background: #2c3e50 !important;
+        color: #fff;
+    }
+
+    .table th, .table td {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    body.light-theme .table th,
+    body.light-theme .table td {
+        border-color: #dee2e6;
+    }
+
+    .table-hover tbody tr:hover {
+        background: rgba(0, 170, 255, 0.1);
+    }
+
+    body.light-theme .table-hover tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .table-responsive {
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+
+    /* Button styling */
+    .btn-custom {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        background: var(--accent-color);
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        background: #0088cc;
+    }
+
+    .btn-custom-small {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-custom-small:hover {
+        background: var(--accent-color);
+        color: #fff;
+        border-color: var(--accent-color);
+    }
+
+    /* Animations */
+    @keyframes fadeInLeft {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-header {
+        animation: fadeInLeft 0.6s ease-out;
+    }
+
+    .animate-subheader {
+        animation: fadeInLeft 0.6s ease-out 0.2s;
+        animation-fill-mode: backwards;
+    }
+
+    .animate-card {
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    .animate-button {
+        animation: slideInUp 0.6s ease-out 0.4s;
+        animation-fill-mode: backwards;
+    }
+
+    .animate-row {
+        animation: slideInUp 0.6s ease-out;
+        animation-delay: calc(0.1s * var(--row-index, 0));
+        animation-fill-mode: backwards;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .card {
+            padding: 15px;
+        }
+        .table {
+            font-size: 0.9rem;
+        }
+        .table th, .table td {
+            padding: 8px;
+        }
+        .btn-custom {
+            padding: 10px 20px;
+            font-size: 0.95rem;
+        }
+        .btn-custom-small {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .mb-5 {
+            margin-bottom: 2.5rem !important;
+        }
+        .display-5 {
+            font-size: 1.8rem;
+        }
+        .card {
+            margin: 0 10px;
+        }
+        .table-responsive {
+            margin: 0 -10px;
+        }
+        .table th, .table td {
+            padding: 6px;
+            font-size: 0.85rem;
+        }
+        .btn-custom {
+            width: 100%;
+        }
+        .btn-custom-small {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<script>
+    // Add row index for animation delay
+    document.querySelectorAll('tbody tr').forEach((row, index) => {
+        row.style.setProperty('--row-index', index);
+    });
+</script>
+{% endblock %}

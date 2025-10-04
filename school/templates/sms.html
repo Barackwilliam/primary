@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Send SMS to Parents{% endblock %}
+
+{% block content %}
+<div class="mb-5 text-center">
+    <h3 class="fw-bold display-4 animate-header text-gradient">Send SMS to Parents</h3>
+    <p class="text-info fs-5 animate-subheader">Compose and send messages to parents efficiently.</p>
+</div>
+
+<div class="card shadow-lg border-0 rounded-5 p-5 animate-card">
+    <div class="card-body">
+        <form method="post" class="form-container">
+            {% csrf_token %}
+            <div class="row g-4">
+                {% for field in form %}
+                    <div class="col-12 {% if field.label|lower == 'message' %}col-md-12{% else %}col-md-6{% endif %} form-floating-wrapper">
+                        
+                        <div class="input-wrapper position-relative">
+                            {{ field }}
+                            <label for="{{ field.id_for_label }}" class="floating-label">
+                                {{ field.label }}
+                                {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                            </label>
+
+                            {% if field.label|lower == 'class' or field.label|lower == 'classroom' %}
+                                <i class="fas fa-building input-icon"></i>
+                            {% elif field.label|lower == 'message' %}
+                                <i class="fas fa-comment-sms input-icon"></i>
+                            {% endif %}
+                        </div>
+
+                        {% if field.errors %}
+                            <div class="text-danger mt-1 fw-semibold small">
+                                {{ field.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <div class="form-text text-info small">{{ field.help_text }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-end mt-5">
+                <button type="submit" class="btn btn-gradient btn-lg animate-button">
+                    <i class="fas fa-paper-plane me-2"></i> Send SMS
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Color palette */
+:root {
+    --primary-color: #4e54c8;       /* Gradient start */
+    --secondary-color: #8f94fb;     /* Gradient end */
+    --accent-color: #f5af19;        /* Highlight / focus */
+    --card-bg: #1f2937;             /* Card dark background */
+    --text-color: #f8f9fa;          /* Light text */
+    --input-bg: #2b3445;            /* Input background */
+}
+
+/* Header gradient */
+.text-gradient {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Card styling */
+.card {
+    background: var(--card-bg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+/* Form container */
+.form-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Inputs and floating labels */
+.form-floating-wrapper {
+    position: relative;
+}
+.input-wrapper input,
+.input-wrapper select,
+.input-wrapper textarea {
+    width: 100%;
+    padding: 16px 12px 12px 45px;
+    border-radius: 10px;
+    border: 1px solid #4b5563;
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.input-wrapper input:focus,
+.input-wrapper select:focus,
+.input-wrapper textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(245,175,25,0.5);
+    outline: none;
+}
+
+.floating-label {
+    position: absolute;
+    top: 50%;
+    left: 45px;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-weight: 500;
+    pointer-events: none;
+    transition: all 0.25s ease-in-out;
+}
+.input-wrapper input:focus + .floating-label,
+.input-wrapper textarea:focus + .floating-label,
+.input-wrapper select:focus + .floating-label,
+.input-wrapper input:not(:placeholder-shown) + .floating-label,
+.input-wrapper textarea:not(:placeholder-shown) + .floating-label,
+.input-wrapper select:not([value=""]) + .floating-label {
+    top: -8px;
+    left: 12px;
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    background: var(--card-bg);
+    padding: 0 5px;
+}
+
+/* Icons */
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    opacity: 0.85;
+}
+
+/* Error and help text */
+.text-danger {
+    font-weight: 600;
+}
+.form-text {
+    font-weight: 500;
+}
+
+/* Button styling */
+.btn-gradient {
+    padding: 14px 28px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+.btn-gradient:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+/* Animations */
+@keyframes fadeInLeft { from { opacity:0; transform:translateX(-40px);} to {opacity:1; transform:translateX(0);} }
+@keyframes slideInUp { from {opacity:0; transform:translateY(40px);} to {opacity:1; transform:translateY(0);} }
+
+.animate-header { animation: fadeInLeft 0.7s ease-out; }
+.animate-subheader { animation: fadeInLeft 0.7s ease-out 0.2s; animation-fill-mode: backwards; }
+.animate-card { animation: slideInUp 0.7s ease-out 0.3s; }
+.animate-button { animation: slideInUp 0.7s ease-out 0.5s; }
+
+/* Responsive */
+@media (max-width:768px){
+    .card { padding: 25px; }
+    .input-wrapper input,.input-wrapper textarea,.input-wrapper select { padding-left:40px; }
+    .input-icon { font-size:1rem; left:12px; }
+    .btn-gradient { width:100%; padding:12px; font-size:1rem; }
+}
+@media (max-width:576px){
+    .display-4 { font-size:2rem; }
+    .form-container { padding:0 10px; }
+    .card { margin:0 10px; }
+}
+</style>
+{% endblock %}

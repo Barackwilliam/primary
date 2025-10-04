@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+
+{% block content %}
+<div class="mb-5 text-center">
+    <h3 class="fw-bold display-5 animate-header text-gradient">Students</h3>
+    <p class="text-primary fs-5 animate-subheader">Manage and view student details for SIDAY PRI & PRIMARY SCHOOL.</p>
+</div>
+
+<div class="card shadow border-0 rounded-4 overflow-hidden animate-card">
+    <div class="card-body">
+        <div class="d-flex justify-content-end mb-4">
+            <a href="{% url 'student_add' %}" class="btn btn-success btn-custom animate-button">
+                <i class="fas fa-user-plus me-2"></i> Add Student
+            </a>
+        </div>
+
+        <div class="table-responsive modern-table">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Full Name</th>
+                        <th>Admission No.</th>
+                        <th>Gender</th>
+                        <th>Date of Birth</th>
+                        <th>Class</th>
+                        <th>Parent Name</th>
+                        <th>Parent Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr class="animate-row">
+                        <td class="text-center">
+                            {% if student.photo %}
+                                <img src="{{ student.photo.url }}" alt="Photo" class="student-photo">
+                            {% else %}
+                                <span class="text-muted"><i class="fas fa-user-circle fa-2x"></i></span>
+                            {% endif %}
+                        </td>
+                        <td>{{ student.full_name }}</td>
+                        <td class="text-center">{{ student.admission_number }}</td>
+                        <td class="text-center">
+                            {% if student.gender == "M" %}
+                                <span class="badge bg-info">Male</span>
+                            {% else %}
+                                <span class="badge bg-pink">Female</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ student.date_of_birth }}</td>
+                        <td class="text-center">{{ student.class_room.name }}</td>
+                        <td>{{ student.parent_name }}</td>
+                        <td class="text-center">{{ student.parent_phone }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted animate-row">
+                            <i class="fas fa-info-circle me-2"></i> No students yet
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Gradient text for title */
+.text-gradient {
+    background: linear-gradient(45deg, #00aaff, #0066ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Card styling */
+.card {
+    background: var(--secondary-bg, #fff);
+    border-radius: 16px;
+}
+body.dark-theme .card {
+    background: #1e1e1e;
+}
+
+/* Modern Table */
+.modern-table table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.modern-table thead tr {
+    background: linear-gradient(90deg, #00aaff, #0066ff);
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+.modern-table th {
+    padding: 14px;
+    text-align: center;
+    border: none;
+}
+
+.modern-table td {
+    padding: 12px 14px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+body.dark-theme .modern-table td {
+    border-color: #333;
+}
+
+/* Hover effect */
+.modern-table tbody tr {
+    transition: all 0.3s ease;
+}
+.modern-table tbody tr:hover {
+    background: rgba(0,170,255,0.08);
+    transform: scale(1.01);
+}
+
+/* Student photo */
+.student-photo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+.student-photo:hover {
+    transform: scale(1.15);
+}
+
+/* Badges */
+.badge {
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+.bg-pink {
+    background-color: #e83e8c !important;
+}
+
+/* Button styling */
+.btn-custom {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    background: linear-gradient(45deg, #27ae60, #219653);
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.btn-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-header { animation: slideInUp 0.5s ease-out; }
+.animate-subheader { animation: slideInUp 0.5s ease-out 0.2s; animation-fill-mode: backwards; }
+.animate-card { animation: slideInUp 0.6s ease-out; }
+.animate-button { animation: slideInUp 0.6s ease-out 0.3s; animation-fill-mode: backwards; }
+.animate-row { animation: slideInUp 0.6s ease-out; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modern-table th, .modern-table td { font-size: 0.85rem; padding: 8px; }
+    .student-photo { width: 38px; height: 38px; }
+}
+@media (max-width: 576px) {
+    .modern-table th, .modern-table td { font-size: 0.8rem; padding: 6px; }
+    .student-photo { width: 32px; height: 32px; }
+}
+</style>
+{% endblock %}

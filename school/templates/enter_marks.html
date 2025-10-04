@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Enter Marks{% endblock %}
+
+{% block content %}
+<div class="mb-5 text-center">
+    <h3 class="fw-bold display-5 animate-header">Enter Marks</h3>
+    <p class="text-primary fs-5 animate-subheader">
+        Select a class and term to input student marks.
+    </p>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 p-4 animate-card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-12 col-md-4">
+                <label for="{{ select_form.class_room.id_for_label }}" class="form-label fw-semibold">
+                    {{ select_form.class_room.label }} <span class="text-danger">*</span>
+                </label>
+                <div class="input-wrapper">
+                    {{ select_form.class_room }}
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <label for="{{ select_form.term.id_for_label }}" class="form-label fw-semibold">
+                    {{ select_form.term.label }} <span class="text-danger">*</span>
+                </label>
+                <div class="input-wrapper">
+                    {{ select_form.term }}
+                </div>
+            </div>
+            <div class="col-12 col-md-4 align-self-end">
+                <button type="submit" class="btn btn-primary btn-custom animate-button w-100">
+                    <i class="fas fa-search me-2"></i> Load Students & Subjects
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if class_room and term %}
+<div class="card shadow-sm border-0 rounded-4 p-4 animate-card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="class_room" value="{{ class_room.id }}">
+            <input type="hidden" name="term" value="{{ term.id }}">
+
+            <h5 class="fw-semibold mb-4 text-primary">
+                Class: {{ class_room.name }} — Term: {{ term.name }} ({{ term.academic_year }})
+            </h5>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center align-middle">Student</th>
+                            {% for subject in subjects %}
+                                <th class="text-center align-middle">{{ subject.name }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td class="align-middle text-start">
+                                <strong>{{ student.full_name }}</strong> 
+                                <br>
+                                <small class="text-muted">{{ student.admission_number }}</small>
+                            </td>
+                            {% for subject in subjects %}
+                            <td class="align-middle">
+                                <input class="form-control form-control-sm input-score text-center"
+                                       type="number" min="0" max="100"
+                                       name="score_{{ student.id }}_{{ subject.id }}" 
+                                       placeholder="0-100"
+                                       value="{% for mark in student.marks.all %}{% if mark.subject.id == subject.id %}{{ mark.score }}{% endif %}{% endfor %}">
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" name="save_marks" class="btn btn-success btn-custom animate-button">
+                    <i class="fas fa-save me-2"></i> Save Marks
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info animate-alert text-center">
+    <i class="fas fa-info-circle me-2"></i> Choose a class and term, then click "Load Students & Subjects" to start entering marks.
+</div>
+{% endif %}
+
+<style>
+/* Card styling */
+.card {
+    background: #fefefe;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* Table & input styling */
+.table th, .table td {
+    vertical-align: middle;
+}
+.input-score {
+    width: 70px;
+    margin: 0 auto;
+    border-radius: 0.5rem;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+.input-score:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13,110,253,0.3);
+}
+
+/* Buttons */
+.btn-custom {
+    border-radius: 0.5rem;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .input-score {
+        width: 50px;
+        font-size: 0.85rem;
+    }
+    .table {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .input-score {
+        width: 45px;
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}
