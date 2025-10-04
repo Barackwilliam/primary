@@ -41,7 +41,7 @@ class ClassRoom(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    code = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=50, unique=True)
     academic_level = models.ForeignKey(AcademicLevel, on_delete=models.CASCADE, related_name="subjects")
     weight = models.PositiveIntegerField(default=1)
 

@@ -37,9 +37,11 @@ def logout_view(request):
 def dashboard(request):
     total_students = Student.objects.count()
     total_classes = ClassRoom.objects.count()
+    total_subject = Subject.objects.count()
     return render(request, "dashboard.html", {
         "total_students": total_students,
-        "total_classes": total_classes
+        "total_classes": total_classes,
+        "total_subject":total_subject
     })
 
 
